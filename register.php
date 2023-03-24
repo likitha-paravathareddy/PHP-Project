@@ -45,6 +45,10 @@ if (isset($_SESSION["user"])) {
            if (empty($fullName) OR empty($email) OR empty($password) OR empty($passwordRepeat)) {
             array_push($errors,"All fields are required");
            }
+           if (!preg_match("/^[a-zA-Z-' ]*$/",$fullName)) {
+            array_push($errors, "Full Name is not valid Only letters and white space allowed");
+           
+          }
            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             array_push($errors, "Email is not valid");
            }
@@ -65,10 +69,19 @@ if (isset($_SESSION["user"])) {
                 
                 if(isset($findResult)){
                     echo "<div class='alert alert-danger'>User already exists.</div>";
+                    header('refresh:0.5;login.php');
                 }
                 else{
+                    try{
                     $insertResult = $result->insertOne([ 'email' => $email, 'password' => $passwordHash,'user'=>$fullName ]);
+                   
                 echo "<div class='alert alert-success'>You are registered successfully.</div>";
+                header('refresh:0.5;login.php');
+                    }
+                    catch (Exception $e){
+                        echo "<script>alert('failed to register..try again')</script>";
+                        header('refresh:0.3;register.php');
+                    }
                 }
         
            }

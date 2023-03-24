@@ -1,5 +1,4 @@
 
-
  <?php
 session_start();
 if (!isset($_SESSION["user"])) {
@@ -33,13 +32,14 @@ if (!isset($_SESSION["user"])) {
 </head>
 <body>
     <div class="container">
-        <h1 style="padding-left:25px;">Welcome to Dashboard</h1>
-        <h3 style="padding-left:190px"><?php echo $_SESSION["user"]?></h3>
-        <a style="padding-left:200px;" href="profile.php">Profile</a><br>
+        <h1 style="padding-left:130px;">Your Details</h1>
+        <h3 style="padding-left:150px">Name :<?php echo $_SESSION["user"]?></h3>
+        <h3 style="padding-left:100px">E-Mail :<?php echo $_SESSION["email"]?></h3>
         <div style="padding-top:15px;padding-left:190px;">
         
-        <a href="logout.php"  class="btn btn-warning">Logout</a>
+        <a href="index.php"  class="btn btn-warning">Home</a>
         </div>
+     
     </div>
 </body>
 </html>

@@ -1,8 +1,8 @@
 <?php
-// session_start();
-// if (isset($_SESSION["user"])) {
-//    header("Location: index.php");
-// }
+session_start();
+if (isset($_SESSION["user"])) {
+   header("Location: index.php");
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,6 +29,7 @@
     </style>
 </head>
 <body>
+<h1 style="text-align:center;">Registration Form</h1>
     <div class="container">
         <?php
         if (isset($_POST["submit"])) {
@@ -58,8 +59,17 @@
                 echo "<div class='alert alert-danger'>$error</div>";
             }
            }else{
-            
+
+                require 'database.php';
+                $findResult=$result->findOne(['email'=>$email]);
+                
+                if(isset($findResult)){
+                    echo "<div class='alert alert-danger'>User already exists.</div>";
+                }
+                else{
+                    $insertResult = $result->insertOne([ 'email' => $email, 'password' => $passwordHash,'user'=>$fullName ]);
                 echo "<div class='alert alert-success'>You are registered successfully.</div>";
+                }
         
            }
           
@@ -71,7 +81,7 @@
                 <input type="text" class="form-control" name="fullname" placeholder="Full Name:">
             </div>
             <div class="form-group">
-                <input type="emamil" class="form-control" name="email" placeholder="Email:">
+                <input type="email" class="form-control" name="email" placeholder="Email:">
             </div>
             <div class="form-group">
                 <input type="password" class="form-control" name="password" placeholder="Password:">

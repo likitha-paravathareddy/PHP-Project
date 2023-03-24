@@ -41,16 +41,23 @@ if (isset($_SESSION["user"])) {
             echo "<div class='alert alert-danger'>Please fill the required fields</div>";
 
            }
-        
-            if ($email=="abc@gmail.com") {
-                if ($password=="12345") {
+           else{
+            require 'database.php';
+            $findResult=$result->findOne(['email'=>$email]);
+            if(isset($findResult)){
+            if ($email==$findResult['email']) {
+                if (password_verify($password,$findResult['password'])) {
                     $remember=$_POST["remember"];
                     if(isset($remember)){
                         setcookie("email",$email,time()+60*60*7);
                         setcookie("password",$password,time()+60*60*7);
                     }
+                    else{
+                        setcookie("email",$email,time()-10);
+                        setcookie("password",$password,time()-10);
+                    }
                     session_start();
-                    $_SESSION["user"] = "Likitha";
+                    $_SESSION["user"] = $findResult["user"];
                     $_SESSION["email"]=$email;
                     $_SESSION["password"]=$password;
                     header("Location: index.php");
@@ -60,6 +67,11 @@ if (isset($_SESSION["user"])) {
             }else{
                 echo "<div class='alert alert-danger'>Email does not match</div>";
             }
+        }
+        else{
+            echo "<div class='alert alert-danger'>you haven't registered yet please register before login</div>";
+        }
+        }
         }
         ?>
       <form action="login.php" method="post">
@@ -78,7 +90,7 @@ if (isset($_SESSION["user"])) {
         </div>
       </form>
 
-     <div><p style="padding-top:8px;">Haven't registered yet ? <a href="registration.php"> Register Here</a></p></div>
+     <div><p style="padding-top:8px;">Haven't registered yet ? <a href="register.php"> Register Here</a></p></div>
     </div>
     <?php
     if(isset($_COOKIE["email"]) && isset($_COOKIE["password"])){
@@ -86,7 +98,7 @@ if (isset($_SESSION["user"])) {
     $user=$_COOKIE["email"];
     $password=$_COOKIE["password"];
     echo "<script>
-    alert('hii')
+  
     document.getElementById('mail').value='$user'
     document.getElementById('pass').value='$password'
     </script>";
